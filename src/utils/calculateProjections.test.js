@@ -63,6 +63,7 @@ function round(val, decimals = 4) {
 
 const DEFAULT_INPUTS = {
   baseSalary: 125_000,
+  marketRate: 125_000,
   oldRate: 4.5,
   newRate: 3.0,
   currentService: 4,
@@ -449,5 +450,61 @@ describe('Edge cases', () => {
       const expected = (yr2.oldSalary + yr3.oldSalary + yr4.oldSalary) / 3;
       expect(round(yr4.oldBest3Avg)).toBe(round(expected));
     }
+  });
+});
+
+// ─── Market Rate Ceilings ─────────────────────────────────────────────────────
+
+describe('Market Rate Ceilings', () => {
+  it('Caps salaries that start above the ceiling immediately', () => {
+    const [yr1] = calculateProjections({
+      baseSalary: 200_000,
+      marketRate: 100_000,
+      oldRate: 4.5,
+      newRate: 3.0,
+      currentService: 0,
+      maxHorizon: 1
+    });
+
+    const expectedMarket = 100_000 * 1.03;
+    expect(round(yr1.oldSalary)).toBe(round(expectedMarket * 1.25));
+    expect(round(yr1.newSalary)).toBe(round(expectedMarket * 1.20));
+  });
+
+  it('Salaries naturally ride the ceiling once they hit it', () => {
+    const data = calculateProjections({
+      baseSalary: 125_000,
+      marketRate: 125_000,
+      oldRate: 4.5,
+      newRate: 3.0,
+      currentService: 0,
+      maxHorizon: 30
+    });
+
+    const yr30 = data[29]; // Year 30
+    const expectedMarketYr30 = 125_000 * Math.pow(1.03, 30);
+    const expectedOldCeiling = expectedMarketYr30 * 1.25;
+
+    // Mathematically uncapped salary would exceed the ceiling
+    const uncappedOld = 125_000 * Math.pow(1.045, 30);
+    expect(uncappedOld).toBeGreaterThan(expectedOldCeiling);
+    
+    // Actual should be perfectly constrained to the ceiling
+    expect(round(yr30.oldSalary)).toBe(round(expectedOldCeiling));
+  });
+
+  it('Never exceeds the respective 1.25x and 1.20x ceilings in any year', () => {
+    // Using default base 125k, market 150k where ceiling might optionally hit later
+    const data = calculateProjections(DEFAULT_INPUTS);
+    
+    data.forEach(yr => {
+      const currentMarket = DEFAULT_INPUTS.marketRate * Math.pow(1 + DEFAULT_INPUTS.newRate / 100, yr.year);
+      const oldCeil = currentMarket * 1.25;
+      const newCeil = currentMarket * 1.20;
+      
+      // Floating point math might be slightly off, so check against rounded diff
+      expect(yr.oldSalary).toBeLessThanOrEqual(oldCeil + 0.0001);
+      expect(yr.newSalary).toBeLessThanOrEqual(newCeil + 0.0001);
+    });
   });
 });

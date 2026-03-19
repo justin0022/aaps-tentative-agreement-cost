@@ -7,6 +7,7 @@
  *
  * @param {object} params
  * @param {number} params.baseSalary      - Current annual salary
+ * @param {number} params.marketRate      - Market rate (midpoint) of the pay grade
  * @param {number} params.oldRate         - Historical growth rate (%)
  * @param {number} params.newRate         - Capped growth rate (%)
  * @param {number} params.currentService  - Years of pensionable service already accrued
@@ -19,6 +20,7 @@ export const BEST_N = 3;
 
 export function calculateProjections({
   baseSalary,
+  marketRate,
   oldRate,
   newRate,
   currentService,
@@ -54,9 +56,20 @@ export function calculateProjections({
   let cumulativeEmployerSavings = 0;
 
   for (let year = 1; year <= maxHorizon; year++) {
-    // Compounding salaries
-    const oldSalary = baseSalary * Math.pow(1 + rOld, year);
-    const newSalary = baseSalary * Math.pow(1 + rNew, year);
+    // Calculate the mathematical growth
+    const calculatedOldSalary = baseSalary * Math.pow(1 + rOld, year);
+    const calculatedNewSalary = baseSalary * Math.pow(1 + rNew, year);
+
+    // The market rate itself moves up by the GPA (rNew)
+    const currentMarketRate = marketRate * Math.pow(1 + rNew, year);
+
+    // Hard ceilings on the pay bands
+    const oldCeiling = currentMarketRate * 1.25;
+    const newCeiling = currentMarketRate * 1.20;
+
+    // Apply the ceilings
+    const oldSalary = Math.min(calculatedOldSalary, oldCeiling);
+    const newSalary = Math.min(calculatedNewSalary, newCeiling);
 
     oldSalaries.push(oldSalary);
     newSalaries.push(newSalary);

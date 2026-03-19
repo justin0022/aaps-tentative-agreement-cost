@@ -11,6 +11,7 @@ import { DEFAULTS } from '../constants/defaults';
 export default function Dashboard() {
   const [inputs, setInputs] = useState({
     baseSalary: DEFAULTS.baseSalary,
+    marketRate: DEFAULTS.marketRate,
     oldRate: DEFAULTS.oldRate,
     newRate: DEFAULTS.newRate,
     currentService: DEFAULTS.currentService,
@@ -26,12 +27,13 @@ export default function Dashboard() {
     () =>
       calculateProjections({
         baseSalary: inputs.baseSalary,
+        marketRate: inputs.marketRate,
         oldRate: inputs.oldRate,
         newRate: inputs.newRate,
         currentService: inputs.currentService,
         maxHorizon: DEFAULTS.maxHorizon,
       }),
-    [inputs.baseSalary, inputs.oldRate, inputs.newRate, inputs.currentService]
+    [inputs.baseSalary, inputs.marketRate, inputs.oldRate, inputs.newRate, inputs.currentService]
   );
 
   // The data point at exactly the selected horizon year

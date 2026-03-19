@@ -210,6 +210,11 @@ export default function AssumptionsDisclosure() {
                 accent="var(--accent-blue)"
               />
               <FormulaRow
+                label="Trajectory Ceilings"
+                formula="Min(Salary, 1.25x or 1.20x of dynamic market rate)"
+                accent="#f59e0b"
+              />
+              <FormulaRow
                 label="Best-3 average salary"
                 formula="Avg of [Salary(N−2), Salary(N−1), Salary(N)]"
                 accent="var(--accent-blue)"
@@ -236,6 +241,11 @@ export default function AssumptionsDisclosure() {
               />
 
               <p style={{ marginTop: 14 }}>
+                <strong style={{ color: 'var(--text-primary)' }}>Trajectory Ceilings:</strong>{' '}
+                The model mathematically enforces pay grade maximums. It dynamically grows your entered Market Rate by the 3% general wage increase (GWI) each projected year. Under the Old System, salaries are hard-capped at 125% of that dynamic market rate — and this ceiling <em>is</em> operative: because the Old Rate (e.g. 4.5% = 3% GWI + ~1.5% merit) outpaces the ceiling's 3% growth, salaries eventually compound into the cap and then merely track it. Under the New System, a theoretical 120% ceiling exists as a safeguard, but under the default scenario it is never reached: since the New Rate equals the GWI (3%), both the projected salary and its ceiling grow at the same rate, keeping their ratio permanently fixed below the cap. The 120% ceiling would only become operative if a custom New Rate above 3% is entered.
+              </p>
+
+              <p style={{ marginTop: 10 }}>
                 <strong style={{ color: 'var(--text-primary)' }}>Best-3 Average:</strong>{' '}
                 The Defined Benefit pension formula uses the average of the 3 most recent consecutive years of salary. In years 1 and 2 of the projection (where fewer than 3 future salary data points exist), the average uses only the available years — consistent with how a new employee's pension would be calculated.
               </p>

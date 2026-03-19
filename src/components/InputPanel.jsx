@@ -11,6 +11,16 @@ const FIELD_GROUPS = [
     prefix: '$',
   },
   {
+    label: 'Current Market Rate (Midpoint)',
+    key: 'marketRate',
+    type: 'currency',
+    min: 10000,
+    max: 500000,
+    step: 1000,
+    prefix: '$',
+    description: 'Must equal or exceed base salary. This tool only models staff already past midpoint (eligible for the old merit system).',
+  },
+  {
     label: 'Merit-Based Growth Rate',
     key: 'oldRate',
     type: 'percent',
@@ -59,10 +69,19 @@ export default function InputPanel({ inputs, onChange }) {
     }
   }
 
-  function handleCurrencyInput(e) {
+  function handleCurrencyInput(key, e) {
     // Strip non-numeric chars and parse
     const raw = e.target.value.replace(/[^0-9]/g, '');
-    onChange('baseSalary', raw === '' ? 0 : parseInt(raw, 10));
+    onChange(key, raw === '' ? 0 : parseInt(raw, 10));
+  }
+
+  function handleBlur(key) {
+    // Enforce that marketRate is never less than baseSalary
+    if (key === 'marketRate' && inputs.marketRate < inputs.baseSalary) {
+      onChange('marketRate', inputs.baseSalary);
+    } else if (key === 'baseSalary' && inputs.baseSalary > inputs.marketRate) {
+      onChange('marketRate', inputs.baseSalary);
+    }
   }
 
   return (
@@ -107,7 +126,8 @@ export default function InputPanel({ inputs, onChange }) {
               type="text"
               inputMode="numeric"
               value={`$${inputs[field.key].toLocaleString('en-CA')}`}
-              onChange={handleCurrencyInput}
+              onChange={(e) => handleCurrencyInput(field.key, e)}
+              onBlur={() => handleBlur(field.key)}
             />
           ) : (
             <input
@@ -119,7 +139,13 @@ export default function InputPanel({ inputs, onChange }) {
               step={field.step}
               value={inputs[field.key]}
               onChange={(e) => handleChange(field.key, e.target.value)}
+              onBlur={() => handleBlur(field.key)}
             />
+          )}
+          {field.description && (
+            <p style={{ fontSize: 10.5, color: 'var(--text-muted)', marginTop: 8, lineHeight: 1.4 }}>
+              {field.description}
+            </p>
           )}
         </div>
       ))}
@@ -173,6 +199,7 @@ export default function InputPanel({ inputs, onChange }) {
       }}>
         <p style={{ fontWeight: 600, color: 'var(--text-secondary)', marginBottom: 6 }}>Methodology</p>
         <p>Salary: <code style={{ color: 'var(--accent-blue)' }}>Base × (1 + Rate)^year</code></p>
+        <p>Ceilings: <code style={{ color: 'var(--accent-blue)' }}>125% Old / 120% New of Market Rate</code></p>
         <p>Pension: <code style={{ color: 'var(--accent-blue)' }}>1.8% × Years of Service × Best‑3 Avg</code></p>
         <p>Employer saving (total): <code style={{ color: 'var(--accent-blue)' }}>119.8% × Deficit</code></p>
       </div>

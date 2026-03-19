@@ -2,6 +2,7 @@
 
 export const DEFAULTS = {
   baseSalary: 125000,
+  marketRate: 125000,
   oldRate: 4.5,       // percentage
   newRate: 3.0,       // percentage
   currentService: 4, // years of pensionable service already accumulated
