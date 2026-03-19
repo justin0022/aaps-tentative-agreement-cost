@@ -185,8 +185,14 @@ export default function AssumptionsDisclosure() {
               <BlockQuote>
                 "What this looks like for this tentative agreement is slowing the salary growth of AAPS' highest earners in each pay grade. This is also an equity issue we have noticed continually getting worse through the years, as high earners in each pay grade see their salaries increase much faster than the lower paid employees."
               </BlockQuote>
+              <p style={{ marginBottom: 12 }}>
+                This calculator models a <strong style={{ color: 'var(--text-primary)' }}>baseline scenario</strong>: an above-market employee who previously received an average merit increase (~1.5%, the midpoint of the historical 0–3% range, combined with the 3% GPA for a ~4.5% total) who now receives an "average" performance review under the new system (3%).
+              </p>
+              <p style={{ marginBottom: 12 }}>
+                <strong style={{ color: 'var(--text-primary)' }}>Important Note on the 3% Rate:</strong> Under the new agreement, 3% is the required pool average for above-market employees, not a guaranteed individual floor. Because it is an average across the group, your actual individual annual increase could be higher than 3% (if you are a top performer) or lower than 3% (if funds are diverted to higher performers to balance the pool).
+              </p>
               <p>
-                This calculator models the <strong style={{ color: 'var(--text-primary)' }}>conservative scenario</strong>: an above-market employee who was receiving the average merit increase (~1.5%, representing the midpoint of the historical 0–3% range, combined with the 3% GPA for a ~4.5% total) who now receives only the 3% floor. The default "Old Growth Rate" of 4.5% reflects this typical-performer baseline. Individual outcomes may vary upward if UBC awards above-average individual merit increases.
+                <strong style={{ color: 'var(--text-primary)' }}>The Exception (The Market Rate Floor):</strong> The only exception to receiving a sub-3% increase is if doing so would cause your salary to fall below the newly adjusted market rate for that year. The agreement guarantees that no employee will fall below market rate, which creates a dynamic safety net for those situated just barely above it.
               </p>
             </Section>
           </div>
