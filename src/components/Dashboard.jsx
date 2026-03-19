@@ -3,6 +3,8 @@ import InputPanel from './InputPanel';
 import SummaryCards from './SummaryCards';
 import TrajectoryChart from './TrajectoryChart';
 import DeficitChart from './DeficitChart';
+import AssumptionsDisclosure from './AssumptionsDisclosure';
+import ProjectionTable from './ProjectionTable';
 import { calculateProjections } from '../utils/calculateProjections';
 import { DEFAULTS } from '../constants/defaults';
 
@@ -129,6 +131,9 @@ export default function Dashboard() {
             </div>
           )}
 
+          {/* Assumptions & Disclosure */}
+          <AssumptionsDisclosure />
+
           {/* Charts grid */}
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20 }}>
             <TrajectoryChart data={projections} horizon={inputs.horizon} />
@@ -136,59 +141,7 @@ export default function Dashboard() {
           </div>
 
           {/* Data table */}
-          <div className="glass fade-up" style={{ padding: '24px', overflow: 'hidden' }}>
-            <h3 style={{ fontSize: 15, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 16 }}>
-              Year-by-Year Breakdown
-            </h3>
-            <div style={{ overflowX: 'auto' }}>
-              <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 12 }}>
-                <thead>
-                  <tr>
-                    {['Year', 'Merit Salary', 'Capped Salary', 'Annual Deficit', 'Cumulative Deficit', 'Merit Pension', 'Capped Pension', 'Pension Gap', 'Employer Savings'].map((h, i) => (
-                      <th key={i} style={{
-                        padding: '8px 12px',
-                        textAlign: i === 0 ? 'center' : 'right',
-                        fontSize: 10,
-                        fontWeight: 700,
-                        letterSpacing: '0.07em',
-                        color: 'var(--text-muted)',
-                        textTransform: 'uppercase',
-                        borderBottom: '1px solid var(--border)',
-                        whiteSpace: 'nowrap',
-                      }}>
-                        {h}
-                      </th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody>
-                  {projections.map((row) => {
-                    const isHorizon = row.year === inputs.horizon;
-                    const fmt = (v) => new Intl.NumberFormat('en-CA', { style: 'currency', currency: 'CAD', maximumFractionDigits: 0 }).format(v);
-                    return (
-                      <tr key={row.year} style={{
-                        background: isHorizon ? 'rgba(59,130,246,0.07)' : 'transparent',
-                        borderBottom: '1px solid var(--border)',
-                        transition: 'background 0.15s',
-                      }}>
-                        <td style={{ padding: '8px 12px', textAlign: 'center', fontWeight: isHorizon ? 700 : 400, color: isHorizon ? 'var(--accent-blue)' : 'var(--text-secondary)' }}>
-                          {isHorizon ? `★ ${row.year}` : row.year}
-                        </td>
-                        <td style={{ padding: '8px 12px', textAlign: 'right', color: '#10b981', fontWeight: 500 }}>{fmt(row.oldSalary)}</td>
-                        <td style={{ padding: '8px 12px', textAlign: 'right', color: '#f43f5e', fontWeight: 500 }}>{fmt(row.newSalary)}</td>
-                        <td style={{ padding: '8px 12px', textAlign: 'right', color: '#f59e0b' }}>{fmt(row.annualDeficit)}</td>
-                        <td style={{ padding: '8px 12px', textAlign: 'right', color: isHorizon ? '#f43f5e' : 'var(--text-secondary)', fontWeight: isHorizon ? 700 : 400 }}>{fmt(row.cumulativeSalaryDeficit)}</td>
-                        <td style={{ padding: '8px 12px', textAlign: 'right', color: '#10b981' }}>{fmt(row.oldPension)}</td>
-                        <td style={{ padding: '8px 12px', textAlign: 'right', color: '#f43f5e' }}>{fmt(row.newPension)}</td>
-                        <td style={{ padding: '8px 12px', textAlign: 'right', color: '#f59e0b' }}>{fmt(row.pensionDeficit)}</td>
-                        <td style={{ padding: '8px 12px', textAlign: 'right', color: '#14b8a6' }}>{fmt(row.employerSavings)}</td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            </div>
-          </div>
+          <ProjectionTable projections={projections} inputs={inputs} />
 
           {/* Footer */}
           <footer style={{ fontSize: 11, color: 'var(--text-muted)', textAlign: 'center', paddingBottom: 16, lineHeight: 1.6 }}>

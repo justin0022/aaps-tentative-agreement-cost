@@ -169,3 +169,70 @@ input[type="range"]::-webkit-slider-thumb:hover {
   to   { opacity: 1; transform: translateY(0); }
 }
 .fade-up { animation: fade-up 0.5s ease forwards; }
+
+/* ── Column-header tooltips ─────────────────────────────── */
+/*  Usage: <span class="col-tooltip-trigger" data-col-tooltip="…">  */
+.col-tooltip-trigger {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.col-tooltip-trigger::after {
+  content: attr(data-col-tooltip);
+  position: absolute;
+  bottom: calc(100% + 10px);
+  left: 50%;
+  transform: translateX(-50%);
+
+  /* Glass look */
+  background: #0d1526ee;
+  border: 1px solid rgba(99,130,200,0.3);
+  border-radius: 10px;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+
+  /* Typography */
+  font-size: 11px;
+  font-weight: 400;
+  font-family: var(--font);
+  letter-spacing: 0.01em;
+  text-transform: none;
+  color: var(--text-secondary);
+  line-height: 1.65;
+  white-space: pre-line;   /* respects \n in the data attribute */
+  text-align: left;
+
+  /* Layout */
+  padding: 10px 14px;
+  width: max-content;
+  max-width: 260px;
+  z-index: 200;
+  pointer-events: none;
+
+  /* Hidden by default */
+  opacity: 0;
+  transition: opacity 0.18s ease;
+}
+.col-tooltip-trigger:hover::after {
+  opacity: 1;
+}
+/* small caret arrow */
+.col-tooltip-trigger::before {
+  content: '';
+  position: absolute;
+  bottom: calc(100% + 4px);
+  left: 50%;
+  transform: translateX(-50%);
+  border: 5px solid transparent;
+  border-top-color: rgba(99,130,200,0.3);
+  z-index: 201;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.18s ease;
+}
+.col-tooltip-trigger:hover::before {
+  opacity: 1;
+}
+
