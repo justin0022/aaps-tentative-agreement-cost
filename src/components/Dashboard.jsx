@@ -71,18 +71,6 @@ export default function Dashboard() {
             Modelling the financial cost of salary growth suppression over time
           </p>
         </div>
-        <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: 10 }}>
-          <div style={{
-            display: 'flex', alignItems: 'center', gap: 8,
-            padding: '6px 14px',
-            borderRadius: 8,
-            background: 'rgba(244,63,94,0.1)',
-            border: '1px solid rgba(244,63,94,0.2)',
-          }}>
-            <div className="pulse-dot" style={{ background: 'var(--accent-red)' }} />
-            <span style={{ fontSize: 11, fontWeight: 600, color: '#f43f5e' }}>Live Projection</span>
-          </div>
-        </div>
       </header>
 
       {/* ── Main layout ──────────────────────────────────── */}
