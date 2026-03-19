@@ -13,6 +13,10 @@
  * @param {number} params.maxHorizon      - Total years to project (default 30)
  * @returns {Array<YearlyProjection>}
  */
+export const ACCRUAL_RATE = 0.018; // 1.8%
+export const EMPLOYER_RATE = 0.198; // 19.8%
+export const BEST_N = 3;
+
 export function calculateProjections({
   baseSalary,
   oldRate,
@@ -22,13 +26,6 @@ export function calculateProjections({
 }) {
   const rOld = oldRate / 100;
   const rNew = newRate / 100;
-
-  // DB pension accrual rate
-  const ACCRUAL_RATE = 0.018; // 1.8%
-  // Total employer savings rate (Pension 9.8% + other benefit savings)
-  const EMPLOYER_RATE = 0.198; // 19.8%
-  // Best-N year window
-  const BEST_N = 3;
 
   // Build running salary history arrays so we can compute the Best-3 average
   const oldSalaries = [];

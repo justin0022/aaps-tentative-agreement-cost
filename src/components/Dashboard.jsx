@@ -146,7 +146,7 @@ export default function Dashboard() {
           {/* Footer */}
           <footer style={{ fontSize: 11, color: 'var(--text-muted)', textAlign: 'center', paddingBottom: 16, lineHeight: 1.6 }}>
             For modelling purposes only. DB pension uses 1.8% accrual rate × (current + future service) × Best-3-Year average salary.
-            Employer savings based on 9.8% contribution rate on cumulative salary suppression.
+            Employer savings based on 119.8% factor of cumulative salary suppression (Salary + Benefits).
           </footer>
         </main>
       </div>

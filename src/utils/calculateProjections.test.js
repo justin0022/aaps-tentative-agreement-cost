@@ -47,7 +47,12 @@
  */
 
 import { describe, it, expect } from 'vitest';
-import { calculateProjections } from './calculateProjections.js';
+import { 
+  calculateProjections, 
+  ACCRUAL_RATE, 
+  EMPLOYER_RATE, 
+  BEST_N 
+} from './calculateProjections.js';
 
 // ─── helpers ─────────────────────────────────────────────────────────────────
 
@@ -246,14 +251,14 @@ describe('DB pension: 1.8% × totalService × best3Avg', () => {
     expect(yr1.totalService).toBe(5);
   });
 
-  it('Year 1: oldPension = 0.018 × 5 × 130,625 = 11,756.25', () => {
+  it(`Year 1: oldPension = ${ACCRUAL_RATE} × 5 × 130,625 = 11,756.25`, () => {
     const [yr1] = calculateProjections(DEFAULT_INPUTS);
-    expect(round(yr1.oldPension)).toBe(round(0.018 * 5 * 130_625));
+    expect(round(yr1.oldPension)).toBe(round(ACCRUAL_RATE * 5 * 130_625));
   });
 
-  it('Year 1: newPension = 0.018 × 5 × 128,750 = 11,587.5', () => {
+  it(`Year 1: newPension = ${ACCRUAL_RATE} × 5 × 128,750 = 11,587.5`, () => {
     const [yr1] = calculateProjections(DEFAULT_INPUTS);
-    expect(round(yr1.newPension)).toBe(round(0.018 * 5 * 128_750));
+    expect(round(yr1.newPension)).toBe(round(ACCRUAL_RATE * 5 * 128_750));
   });
 
   it('Year 1: pensionDeficit = oldPension − newPension', () => {
@@ -261,11 +266,11 @@ describe('DB pension: 1.8% × totalService × best3Avg', () => {
     expect(round(yr1.pensionDeficit)).toBe(round(yr1.oldPension - yr1.newPension));
   });
 
-  it('Pension formula holds for every year: p = 0.018 × totalService × best3Avg', () => {
+  it(`Pension formula holds for every year: p = ${ACCRUAL_RATE} × totalService × best3Avg`, () => {
     const data = calculateProjections(DEFAULT_INPUTS);
     data.forEach((yr) => {
-      expect(round(yr.oldPension)).toBe(round(0.018 * yr.totalService * yr.oldBest3Avg));
-      expect(round(yr.newPension)).toBe(round(0.018 * yr.totalService * yr.newBest3Avg));
+      expect(round(yr.oldPension)).toBe(round(ACCRUAL_RATE * yr.totalService * yr.oldBest3Avg));
+      expect(round(yr.newPension)).toBe(round(ACCRUAL_RATE * yr.totalService * yr.newBest3Avg));
     });
   });
 
@@ -300,20 +305,20 @@ describe('DB pension: 1.8% × totalService × best3Avg', () => {
 // ─── Employer pension savings ─────────────────────────────────────────────────
 
 describe('Employer total savings: 119.8% of annual salary deficit', () => {
-  it('Year 1: employerSavings = 1.198 × 1,875 = 2,246.25', () => {
+  it(`Year 1: employerSavings = (1 + ${EMPLOYER_RATE}) × 1,875 = 2,246.25`, () => {
     const [yr1] = calculateProjections(DEFAULT_INPUTS);
-    expect(round(yr1.employerSavings)).toBe(round(1.198 * 1_875));
+    expect(round(yr1.employerSavings)).toBe(round((1 + EMPLOYER_RATE) * 1_875));
   });
 
-  it('Year 2: employerSavings = annual deficit (3,890.625) × 1.198 = 4,660.96875', () => {
+  it(`Year 2: employerSavings = annual deficit (3,890.625) × (1 + ${EMPLOYER_RATE})`, () => {
     const [, yr2] = calculateProjections(DEFAULT_INPUTS);
-    expect(round(yr2.employerSavings)).toBe(round(1.198 * yr2.annualDeficit));
+    expect(round(yr2.employerSavings)).toBe(round((1 + EMPLOYER_RATE) * yr2.annualDeficit));
   });
 
-  it('employerSavings = 1.198 × annualDeficit every year', () => {
+  it(`employerSavings = (1 + ${EMPLOYER_RATE}) × annualDeficit every year`, () => {
     const data = calculateProjections(DEFAULT_INPUTS);
     data.forEach((yr) => {
-      expect(round(yr.employerSavings)).toBe(round(1.198 * yr.annualDeficit));
+      expect(round(yr.employerSavings)).toBe(round((1 + EMPLOYER_RATE) * yr.annualDeficit));
     });
   });
 
@@ -324,10 +329,10 @@ describe('Employer total savings: 119.8% of annual salary deficit', () => {
     }
   });
 
-  it('cumulativeEmployerSavings = 1.198 × cumulativeSalaryDeficit every year', () => {
+  it(`cumulativeEmployerSavings = (1 + ${EMPLOYER_RATE}) × cumulativeSalaryDeficit every year`, () => {
     const data = calculateProjections(DEFAULT_INPUTS);
     data.forEach((yr) => {
-      expect(round(yr.cumulativeEmployerSavings)).toBe(round(1.198 * yr.cumulativeSalaryDeficit));
+      expect(round(yr.cumulativeEmployerSavings)).toBe(round((1 + EMPLOYER_RATE) * yr.cumulativeSalaryDeficit));
     });
   });
 
@@ -407,5 +412,42 @@ describe('Edge cases', () => {
       expect(yr.annualDeficit).toBe(0);
       expect(yr.oldPension).toBe(0);
     });
+  });
+
+  it('Negative oldRate still works (salary decreases)', () => {
+    const data = calculateProjections({ ...DEFAULT_INPUTS, oldRate: -1.0 });
+    expect(data[0].oldSalary).toBeLessThan(125_000);
+    expect(data[0].oldSalary).toBe(round(125_000 * 0.99));
+  });
+
+  it('Both rates zero results in zero deficits', () => {
+    const data = calculateProjections({ ...DEFAULT_INPUTS, oldRate: 0, newRate: 0 });
+    data.forEach((yr) => {
+      expect(yr.oldSalary).toBe(125_000);
+      expect(yr.newSalary).toBe(125_000);
+      expect(yr.annualDeficit).toBe(0);
+      expect(yr.pensionDeficit).toBe(0);
+    });
+  });
+
+  it('Extremely long horizon (100 years) handles precision', () => {
+    const data = calculateProjections({ ...DEFAULT_INPUTS, maxHorizon: 100 });
+    expect(data).toHaveLength(100);
+    const last = data[99];
+    expect(isFinite(last.oldSalary)).toBe(true);
+    expect(last.oldSalary).toBeGreaterThan(125_000);
+  });
+
+  it('Best-N average actually uses BEST_N constant', () => {
+    // This is more of a logic check—verify BEST_N is indeed 3 as exported
+    expect(BEST_N).toBe(3);
+    const data = calculateProjections(DEFAULT_INPUTS);
+    if (data.length >= 4) {
+      const yr4 = data[3];
+      const yr3 = data[2];
+      const yr2 = data[1];
+      const expected = (yr2.oldSalary + yr3.oldSalary + yr4.oldSalary) / 3;
+      expect(round(yr4.oldBest3Avg)).toBe(round(expected));
+    }
   });
 });

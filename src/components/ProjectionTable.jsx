@@ -83,7 +83,7 @@ const COLUMNS = [
   },
   {
     key: 'oldPension',
-    label: 'Merit Pension',
+    label: 'Merit Annual Pension',
     align: 'right',
     tooltip: 'Estimated annual DB pension payout at this year,\nbased on the merit-based salary trajectory.\n\nFormula: 1.8% × Service Years × Best-3 Avg Salary\n(Best-3 = avg of this year + 2 prior years\' merit salaries)',
     value: (row) => row.oldPension,
@@ -94,7 +94,7 @@ const COLUMNS = [
   },
   {
     key: 'newPension',
-    label: 'Capped Pension',
+    label: 'Capped Annual Pension',
     align: 'right',
     tooltip: 'Estimated annual DB pension payout at this year,\nbased on the capped salary trajectory.\n\nFormula: 1.8% × Service Years × Best-3 Avg Salary\n(Best-3 = avg of this year + 2 prior years\' capped salaries)',
     value: (row) => row.newPension,
@@ -105,7 +105,7 @@ const COLUMNS = [
   },
   {
     key: 'pensionDeficit',
-    label: 'Pension Gap',
+    label: 'Annual Pension Gap',
     align: 'right',
     tooltip: 'The permanent annual reduction in DB pension payout\nat this year — what you lose every year in retirement\ndue to the suppressed salary base.\n\nFormula: Merit Pension − Capped Pension',
     value: (row) => row.pensionDeficit,
@@ -116,7 +116,7 @@ const COLUMNS = [
   },
   {
     key: 'employerSavings',
-    label: 'Employer Savings',
+    label: 'Annual Employer Savings',
     align: 'right',
     tooltip: 'Total institutional savings in this specific year\nfrom suppressed salary growth. This includes the\nsalary itself (the deficit) + the 19.8% benefit load.\n\nFormula: 119.8% × Annual Deficit',
     value: (row) => row.employerSavings,
@@ -234,8 +234,8 @@ export default function ProjectionTable({ projections, inputs }) {
         </span>
       </div>
 
-      <div style={{ 
-        overflowX: 'auto', 
+      <div style={{
+        overflowX: 'auto',
         paddingTop: '40px', // Extra buffer for top-positioned tooltips
         marginTop: '-40px'  // Offset the buffer
       }}>
