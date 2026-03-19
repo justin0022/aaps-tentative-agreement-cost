@@ -59,13 +59,13 @@ export default function Dashboard() {
           flexShrink: 0,
         }}>
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-            <line x1="12" y1="1" x2="12" y2="23"/>
-            <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+            <line x1="12" y1="1" x2="12" y2="23" />
+            <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
           </svg>
         </div>
         <div>
           <h1 style={{ fontSize: 16, fontWeight: 800, color: 'var(--text-primary)', letterSpacing: '-0.01em' }}>
-            AAPS Compensation Impact Calculator
+            UBC AAPS Tentative Agreement Compensation Impact Calculator
           </h1>
           <p style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 1 }}>
             Modelling the financial cost of salary growth suppression over time
@@ -115,9 +115,9 @@ export default function Dashboard() {
               gap: 12,
             }}>
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
-                <circle cx="12" cy="12" r="10"/>
-                <line x1="12" y1="8" x2="12" y2="12"/>
-                <line x1="12" y1="16" x2="12.01" y2="16"/>
+                <circle cx="12" cy="12" r="10" />
+                <line x1="12" y1="8" x2="12" y2="12" />
+                <line x1="12" y1="16" x2="12.01" y2="16" />
               </svg>
               <p style={{ fontSize: 12, color: 'var(--text-secondary)', lineHeight: 1.5 }}>
                 <strong style={{ color: '#f59e0b' }}>Pension impact at Year {inputs.horizon}:</strong>{' '}
