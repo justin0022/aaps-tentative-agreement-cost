@@ -54,9 +54,9 @@ const CARDS = [
   },
   {
     id: 'employer-savings',
-    key: 'employerSavings',
-    label: 'Employer Pension Savings',
-    sublabel: 'Accumulated employer contribution relief',
+    key: 'cumulativeEmployerSavings',
+    label: 'Total Employer Savings',
+    sublabel: 'Total institutional relief by target year',
     accentColor: '#14b8a6',
     accentBg: 'rgba(20,184,166,0.08)',
     accentBorder: 'rgba(20,184,166,0.2)',
@@ -68,7 +68,7 @@ const CARDS = [
         <line x1="10" y1="14" x2="14" y2="14"/>
       </svg>
     ),
-    description: 'Employer\'s pension contribution savings from suppressed salary base (9.8% of cumulative deficit).',
+    description: 'Total savings for the employer from suppressed salary growth, including 100% of the salary deficit plus the 19.8% in associated benefit costs (pension, EI, CPP, etc).',
   },
 ];
 
@@ -95,6 +95,10 @@ export default function SummaryCards({ dataAtHorizon, horizon }) {
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 16 }}>
         {CARDS.map((card) => {
           const value = dataAtHorizon[card.key] ?? 0;
+          const displayLabel = card.id === 'cumulative-deficit' 
+            ? `${card.label} by Year ${horizon}` 
+            : card.label;
+
           return (
             <article
               key={card.id}
@@ -114,7 +118,7 @@ export default function SummaryCards({ dataAtHorizon, horizon }) {
                   <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
                     <span style={{ color: card.accentColor }}>{card.icon}</span>
                     <p style={{ fontSize: 12, fontWeight: 700, color: card.accentColor, letterSpacing: '0.06em', textTransform: 'uppercase' }}>
-                      {card.label}
+                      {displayLabel}
                     </p>
                   </div>
                   <p style={{ fontSize: 11, color: 'var(--text-muted)' }}>{card.sublabel}</p>

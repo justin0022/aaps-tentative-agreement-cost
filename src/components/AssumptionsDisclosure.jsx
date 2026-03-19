@@ -219,8 +219,13 @@ export default function AssumptionsDisclosure() {
                 accent="#f43f5e"
               />
               <FormulaRow
-                label="Employer pension savings"
-                formula="9.8% × Cumulative Salary Deficit"
+                label="Employer benefit load"
+                formula="19.8% (9.8% Pension + ~10% Benefits)"
+                accent="var(--accent-teal)"
+              />
+              <FormulaRow
+                label="Total employer savings"
+                formula="119.8% × Cumulative Salary Deficit"
                 accent="var(--accent-teal)"
               />
 
@@ -230,8 +235,8 @@ export default function AssumptionsDisclosure() {
               </p>
 
               <p style={{ marginTop: 10 }}>
-                <strong style={{ color: 'var(--text-primary)' }}>Employer Savings Rate:</strong>{' '}
-                The 9.8% rate represents the employer's pension contribution rate applied to the suppressed salary base, quantifying the institutional savings that result directly from capped merit increases.
+                <strong style={{ color: 'var(--text-primary)' }}>Total Employer Savings:</strong>{' '}
+                This represents the total institutional relief gained by the employer. It includes 100% of the salary deficit (money they would have paid you) <strong>plus</strong> the 19.8% in associated payroll costs (9.8% pension + ~10% other benefits) that they also avoided paying.
               </p>
             </Section>
 

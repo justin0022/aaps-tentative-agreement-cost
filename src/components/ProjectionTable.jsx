@@ -118,10 +118,10 @@ const COLUMNS = [
     key: 'employerSavings',
     label: 'Employer Savings',
     align: 'right',
-    tooltip: 'Cumulative amount the employer has saved on pension\ncontributions by suppressing salary growth.\n9.8% is the employer\'s pension contribution rate.\n\nFormula: 9.8% × Cumulative Salary Deficit',
+    tooltip: 'Total institutional savings in this specific year\nfrom suppressed salary growth. This includes the\nsalary itself (the deficit) + the 19.8% benefit load.\n\nFormula: 119.8% × Annual Deficit',
     value: (row) => row.employerSavings,
     formulaStr: (row) =>
-      `9.8% × ${fmtCompact(row.cumulativeSalaryDeficit)}`,
+      `119.8% × ${fmtCompact(row.annualDeficit)}`,
     color: () => '#14b8a6',
     fontWeight: () => 400,
   },
@@ -133,25 +133,27 @@ function TooltipHeader({ col }) {
   return (
     <th
       style={{
-        padding: '10px 12px',
+        padding: '12px',
         textAlign: col.align,
         fontSize: 10,
         fontWeight: 700,
         letterSpacing: '0.07em',
         color: 'var(--text-muted)',
         textTransform: 'uppercase',
-        borderBottom: '1px solid var(--border)',
+        borderBottom: '2px solid var(--border)',
         whiteSpace: 'nowrap',
         position: 'relative',
         userSelect: 'none',
+        background: 'rgba(13,21,38,0.4)', // Slight header highlight
       }}
     >
       <span
+        title={col.tooltip} // Native fallback for maximum reliability
         data-col-tooltip={col.tooltip}
         style={{
           display: 'inline-flex',
           alignItems: 'center',
-          gap: 4,
+          gap: 6,
           cursor: 'help',
         }}
         className="col-tooltip-trigger"
@@ -159,15 +161,15 @@ function TooltipHeader({ col }) {
         {col.label}
         {col.tooltip && (
           <svg
-            width="10"
-            height="10"
+            width="12"
+            height="12"
             viewBox="0 0 24 24"
             fill="none"
             stroke="currentColor"
             strokeWidth="2.5"
             strokeLinecap="round"
             strokeLinejoin="round"
-            style={{ opacity: 0.5, flexShrink: 0 }}
+            style={{ opacity: 0.6, flexShrink: 0 }}
           >
             <circle cx="12" cy="12" r="10" />
             <line x1="12" y1="8" x2="12" y2="12" />
@@ -193,11 +195,12 @@ function DataCell({ col, row, inputs }) {
   return (
     <td
       style={{
-        padding: '7px 12px',
+        padding: '10px 12px',
         textAlign: col.align,
         color,
         fontWeight: fw,
         verticalAlign: 'top',
+        borderBottom: '1px solid rgba(99,130,200,0.05)',
       }}
     >
       <div style={{ lineHeight: 1.3 }}>{displayText}</div>
@@ -221,17 +224,21 @@ function DataCell({ col, row, inputs }) {
 
 export default function ProjectionTable({ projections, inputs }) {
   return (
-    <div className="glass fade-up" style={{ padding: '24px', overflow: 'hidden' }}>
-      <div style={{ display: 'flex', alignItems: 'baseline', gap: 12, marginBottom: 16 }}>
-        <h3 style={{ fontSize: 15, fontWeight: 700, color: 'var(--text-primary)' }}>
+    <div className="glass fade-up" style={{ padding: '24px' }}> {/* Removed overflow: hidden here */}
+      <div style={{ display: 'flex', alignItems: 'baseline', gap: 12, marginBottom: 20 }}>
+        <h3 style={{ fontSize: 16, fontWeight: 700, color: 'var(--text-primary)' }}>
           Year-by-Year Breakdown
         </h3>
         <span style={{ fontSize: 11, color: 'var(--text-muted)' }}>
-          Hover column headers for descriptions · formula shown below each value
+          Hover column headers to see calculation details
         </span>
       </div>
 
-      <div style={{ overflowX: 'auto', position: 'relative' }}>
+      <div style={{ 
+        overflowX: 'auto', 
+        paddingTop: '40px', // Extra buffer for top-positioned tooltips
+        marginTop: '-40px'  // Offset the buffer
+      }}>
         <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 12 }}>
           <thead>
             <tr>
@@ -247,8 +254,7 @@ export default function ProjectionTable({ projections, inputs }) {
                 <tr
                   key={row.year}
                   style={{
-                    background: isHorizon ? 'rgba(59,130,246,0.07)' : 'transparent',
-                    borderBottom: '1px solid var(--border)',
+                    background: isHorizon ? 'rgba(59,130,246,0.1)' : 'transparent',
                     transition: 'background 0.15s',
                   }}
                 >
@@ -264,3 +270,4 @@ export default function ProjectionTable({ projections, inputs }) {
     </div>
   );
 }
+

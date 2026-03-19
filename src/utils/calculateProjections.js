@@ -25,8 +25,8 @@ export function calculateProjections({
 
   // DB pension accrual rate
   const ACCRUAL_RATE = 0.018; // 1.8%
-  // Employer contribution rate applied to CUMULATIVE salary deficit
-  const EMPLOYER_RATE = 0.098; // 9.8%
+  // Total employer savings rate (Pension 9.8% + other benefit savings)
+  const EMPLOYER_RATE = 0.198; // 19.8%
   // Best-N year window
   const BEST_N = 3;
 
@@ -80,8 +80,9 @@ export function calculateProjections({
     const newPension = ACCRUAL_RATE * totalService * newBest3Avg;
     const pensionDeficit = oldPension - newPension;
 
-    // Employer pension contribution savings on the cumulative salary suppression
-    cumulativeEmployerSavings += EMPLOYER_RATE * annualDeficit;
+    // Total employer savings = salary they didn't pay (deficit) + benefits they didn't pay on that salary
+    const annualEmployerSavings = annualDeficit * (1 + EMPLOYER_RATE);
+    cumulativeEmployerSavings += annualEmployerSavings;
 
     projections.push({
       year,
@@ -95,7 +96,8 @@ export function calculateProjections({
       oldPension,
       newPension,
       pensionDeficit,
-      employerSavings: cumulativeEmployerSavings,
+      employerSavings: annualEmployerSavings,
+      cumulativeEmployerSavings,
     });
   }
 

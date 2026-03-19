@@ -18,7 +18,8 @@
  *   oldPension = 0.018 × 5 × 130,625  = 11,756.250
  *   newPension = 0.018 × 5 × 128,750  = 11,587.500
  *   pensDef    = 11,756.25 − 11,587.5  = 168.750
- *   empSavings = 0.098 × 1,875        = 183.750
+ *   empSavings = 1.198 × 1,875        = 2,246.250    (Salary deficit + benefits saved)
+ *   cumEmpSav  = 2,246.250
  *
  * Year 2 (hand-computed):
  *   oldSalary  = 125,000 × 1.045²     = 136,503.125
@@ -298,36 +299,43 @@ describe('DB pension: 1.8% × totalService × best3Avg', () => {
 
 // ─── Employer pension savings ─────────────────────────────────────────────────
 
-describe('Employer pension savings: 9.8% of cumulative salary deficit', () => {
-  it('Year 1: employerSavings = 0.098 × 1,875 = 183.75', () => {
+describe('Employer total savings: 119.8% of annual salary deficit', () => {
+  it('Year 1: employerSavings = 1.198 × 1,875 = 2,246.25', () => {
     const [yr1] = calculateProjections(DEFAULT_INPUTS);
-    expect(round(yr1.employerSavings)).toBe(round(0.098 * 1_875));
+    expect(round(yr1.employerSavings)).toBe(round(1.198 * 1_875));
   });
 
-  it('Year 2: employerSavings = cumulative (yr1 + yr2 annualDeficits) × 0.098', () => {
-    const [yr1, yr2] = calculateProjections(DEFAULT_INPUTS);
-    const expected = 0.098 * (yr1.annualDeficit + yr2.annualDeficit);
-    expect(round(yr2.employerSavings)).toBe(round(expected));
+  it('Year 2: employerSavings = annual deficit (3,890.625) × 1.198 = 4,660.96875', () => {
+    const [, yr2] = calculateProjections(DEFAULT_INPUTS);
+    expect(round(yr2.employerSavings)).toBe(round(1.198 * yr2.annualDeficit));
   });
 
-  it('employerSavings = 0.098 × cumulativeSalaryDeficit every year', () => {
+  it('employerSavings = 1.198 × annualDeficit every year', () => {
     const data = calculateProjections(DEFAULT_INPUTS);
     data.forEach((yr) => {
-      expect(round(yr.employerSavings)).toBe(round(0.098 * yr.cumulativeSalaryDeficit));
+      expect(round(yr.employerSavings)).toBe(round(1.198 * yr.annualDeficit));
     });
   });
 
-  it('Employer savings are always increasing', () => {
+  it('Employer annual savings are always increasing (proportional to deficit)', () => {
     const data = calculateProjections(DEFAULT_INPUTS);
     for (let i = 1; i < data.length; i++) {
       expect(data[i].employerSavings).toBeGreaterThan(data[i - 1].employerSavings);
     }
   });
 
+  it('cumulativeEmployerSavings = 1.198 × cumulativeSalaryDeficit every year', () => {
+    const data = calculateProjections(DEFAULT_INPUTS);
+    data.forEach((yr) => {
+      expect(round(yr.cumulativeEmployerSavings)).toBe(round(1.198 * yr.cumulativeSalaryDeficit));
+    });
+  });
+
   it('Employer savings are 0 when both rates are equal', () => {
     const data = calculateProjections({ ...DEFAULT_INPUTS, oldRate: 3, newRate: 3 });
     data.forEach((yr) => {
       expect(round(yr.employerSavings)).toBe(0);
+      expect(round(yr.cumulativeEmployerSavings)).toBe(0);
     });
   });
 });
@@ -357,7 +365,7 @@ describe('Output structure and length', () => {
       'year', 'oldSalary', 'newSalary', 'annualDeficit',
       'cumulativeSalaryDeficit', 'oldBest3Avg', 'newBest3Avg',
       'totalService', 'oldPension', 'newPension', 'pensionDeficit',
-      'employerSavings',
+      'employerSavings', 'cumulativeEmployerSavings',
     ];
     const data = calculateProjections(DEFAULT_INPUTS);
     data.forEach((yr) => {
