@@ -23,14 +23,14 @@ const CARDS = [
     id: 'cumulative-deficit',
     key: 'cumulativeSalaryDeficit',
     label: 'Cumulative Salary Deficit',
-    sublabel: 'Total capital lost by target year',
+    sublabel: 'Total lost earnings by target year',
     accentColor: '#f43f5e',
     accentBg: 'rgba(244,63,94,0.08)',
     accentBorder: 'rgba(244,63,94,0.2)',
     icon: (
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <polyline points="23 18 13.5 8.5 8.5 13.5 1 6"/>
-        <polyline points="17 18 23 18 23 12"/>
+        <polyline points="23 18 13.5 8.5 8.5 13.5 1 6" />
+        <polyline points="17 18 23 18 23 12" />
       </svg>
     ),
     description: 'Total foregone salary from suppressed growth compared to the merit-based trajectory.',
@@ -45,9 +45,9 @@ const CARDS = [
     accentBorder: 'rgba(245,158,11,0.2)',
     icon: (
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M12 2L2 7l10 5 10-5-10-5z"/>
-        <path d="M2 17l10 5 10-5"/>
-        <path d="M2 12l10 5 10-5"/>
+        <path d="M12 2L2 7l10 5 10-5-10-5z" />
+        <path d="M2 17l10 5 10-5" />
+        <path d="M2 12l10 5 10-5" />
       </svg>
     ),
     description: 'Annual pension reduction at target year based on Best-3 average salary method.',
@@ -62,10 +62,10 @@ const CARDS = [
     accentBorder: 'rgba(20,184,166,0.2)',
     icon: (
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <rect x="2" y="7" width="20" height="14" rx="2"/>
-        <path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/>
-        <line x1="12" y1="12" x2="12" y2="16"/>
-        <line x1="10" y1="14" x2="14" y2="14"/>
+        <rect x="2" y="7" width="20" height="14" rx="2" />
+        <path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2" />
+        <line x1="12" y1="12" x2="12" y2="16" />
+        <line x1="10" y1="14" x2="14" y2="14" />
       </svg>
     ),
     description: 'Total savings for the employer from suppressed salary growth, including 100% of the salary deficit plus the 19.8% in associated benefit costs (pension, EI, CPP, etc).',
@@ -95,9 +95,7 @@ export default function SummaryCards({ dataAtHorizon, horizon }) {
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 16 }}>
         {CARDS.map((card) => {
           const value = dataAtHorizon[card.key] ?? 0;
-          const displayLabel = card.id === 'cumulative-deficit' 
-            ? `${card.label} by Year ${horizon}` 
-            : card.label;
+          const displayLabel = `${card.label} by Year ${horizon}`
 
           return (
             <article
