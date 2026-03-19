@@ -173,7 +173,7 @@ export default function InputPanel({ inputs, onChange }) {
       }}>
         <p style={{ fontWeight: 600, color: 'var(--text-secondary)', marginBottom: 6 }}>Methodology</p>
         <p>Salary: <code style={{ color: 'var(--accent-blue)' }}>Base × (1 + Rate)^year</code></p>
-        <p>Pension: <code style={{ color: 'var(--accent-blue)' }}>1.8% × Service × Best‑3 Avg</code></p>
+        <p>Pension: <code style={{ color: 'var(--accent-blue)' }}>1.8% × Years of Service × Best‑3 Avg</code></p>
         <p>Employer saving (total): <code style={{ color: 'var(--accent-blue)' }}>119.8% × Deficit</code></p>
       </div>
     </aside>
