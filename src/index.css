@@ -235,3 +235,65 @@ input[type="range"]::-webkit-slider-thumb:hover {
   opacity: 1;
 }
 
+
+/* ── Mobile sidebar overlay ────────────────────────────────── */
+.sidebar-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(4px);
+  z-index: 40;
+}
+
+@media (max-width: 767px) {
+  .sidebar-overlay.open {
+    display: block;
+  }
+
+  /* Sidebar panel slides in from left on mobile */
+  .mobile-sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 300px;
+    max-width: 90vw;
+    z-index: 50;
+    transform: translateX(-100%);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow-y: auto;
+    padding: 24px 20px;
+    background: var(--bg-surface);
+    border-right: 1px solid var(--border);
+  }
+  .mobile-sidebar.open {
+    transform: translateX(0);
+  }
+
+  /* Desktop sidebar hidden on mobile */
+  .desktop-sidebar {
+    display: none !important;
+  }
+
+  /* Only visible on mobile */
+  .mobile-only {
+    display: flex !important;
+  }
+
+  /* Disable CSS column-header tooltips on touch — they don't work well */
+  .col-tooltip-trigger::after,
+  .col-tooltip-trigger::before {
+    display: none;
+  }
+}
+
+@media (min-width: 768px) {
+  /* Mobile-only elements hidden on desktop */
+  .mobile-only {
+    display: none !important;
+  }
+  .desktop-sidebar {
+    display: block;
+  }
+}

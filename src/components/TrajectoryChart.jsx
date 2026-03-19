@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   ResponsiveContainer,
   LineChart,
@@ -12,6 +12,16 @@ import {
   Area,
   AreaChart,
 } from 'recharts';
+
+function useIsMobile() {
+  const [isMobile, setIsMobile] = useState(() => window.innerWidth < 768);
+  useEffect(() => {
+    const handler = () => setIsMobile(window.innerWidth < 768);
+    window.addEventListener('resize', handler);
+    return () => window.removeEventListener('resize', handler);
+  }, []);
+  return isMobile;
+}
 
 function fmtSalary(v) {
   return new Intl.NumberFormat('en-CA', {
@@ -58,6 +68,7 @@ function CustomTooltip({ active, payload, label }) {
 }
 
 export default function TrajectoryChart({ data, horizon }) {
+  const isMobile = useIsMobile();
   return (
     <div className="glass fade-up" style={{ padding: '28px 24px' }}>
       <div className="flex items-center justify-between" style={{ marginBottom: 24 }}>
@@ -81,7 +92,7 @@ export default function TrajectoryChart({ data, horizon }) {
         </div>
       </div>
 
-      <ResponsiveContainer width="100%" height={280}>
+      <ResponsiveContainer width="100%" height={isMobile ? 200 : 280}>
         <AreaChart data={data} margin={{ top: 5, right: 10, left: 20, bottom: 0 }}>
           <defs>
             <linearGradient id="gradOld" x1="0" y1="0" x2="0" y2="1">

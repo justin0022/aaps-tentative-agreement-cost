@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   ResponsiveContainer,
   ComposedChart,
@@ -11,6 +11,16 @@ import {
   ReferenceLine,
   Cell,
 } from 'recharts';
+
+function useIsMobile() {
+  const [isMobile, setIsMobile] = useState(() => window.innerWidth < 768);
+  useEffect(() => {
+    const handler = () => setIsMobile(window.innerWidth < 768);
+    window.addEventListener('resize', handler);
+    return () => window.removeEventListener('resize', handler);
+  }, []);
+  return isMobile;
+}
 
 function fmtCurrency(v) {
   return new Intl.NumberFormat('en-CA', {
@@ -63,6 +73,7 @@ function barColor(index, total) {
 }
 
 export default function DeficitChart({ data, horizon }) {
+  const isMobile = useIsMobile();
   return (
     <div className="glass fade-up" style={{ padding: '28px 24px' }}>
       <div className="flex items-center justify-between" style={{ marginBottom: 24 }}>
@@ -86,7 +97,7 @@ export default function DeficitChart({ data, horizon }) {
         </div>
       </div>
 
-      <ResponsiveContainer width="100%" height={280}>
+      <ResponsiveContainer width="100%" height={isMobile ? 200 : 280}>
         <ComposedChart data={data} margin={{ top: 5, right: 10, left: 20, bottom: 0 }}>
           <CartesianGrid strokeDasharray="4 4" stroke="rgba(99,130,200,0.1)" />
           <XAxis
